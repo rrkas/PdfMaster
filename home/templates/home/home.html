@@ -1,0 +1,21 @@
+{% extends "home/layout.html" %}
+{% load static %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 style="color:indigo;" class="mb-5">Welcome to PDF Master!</h1>
+        <div class="row">
+            {% for menu in menu_items %}
+                <div class="col-6 col-md-4">
+                    <a href="{% url menu.target_url %}" class="item-url item-section" style="display:block;">
+                        {% if menu.img_url %}
+                            <img src="{% static menu.img_url %}" class="item-logo mr-2">
+                        {% endif %}
+                        <span class="item-title">{{ menu.name }}</span>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
