@@ -3,5 +3,11 @@
 {% if success %}
     <h1 class="mb-5" style="color: indigo;">Files Merged</h1>
     <a class="btn btn-success" href="{% url 'pdf-merge-download' file_id %}">Download ({{ size }})</a>
+{% else %}
+    <h1>Merging Failed!</h1>
+    {% if file_id == 'error' %}
+        <h3>Error occurred while merging pdfs!</h3>
+    {% endif %}
+    <a href="{% url 'pdf-merge-home' %}">Please try again!</a>
 {% endif %}
 {% endblock content %}

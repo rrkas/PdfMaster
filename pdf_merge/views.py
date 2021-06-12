@@ -21,6 +21,9 @@ def merge_pdfs(files: List[TemporaryUploadedFile]) -> str:
     if not os.path.exists(join(os.getcwd(), upload_root, 'merged-files')):
         os.mkdir(join(os.getcwd(), upload_root, 'merged-files'))
     pdfMerger = PyPDF2.PdfFileMerger()
+    files = [file for file in files if file.name.split('.')[-1] in ['pdf', 'PDF']]
+    if len(files) == 0:
+        return 'failure'
     for file in files:
         print(file)
         pdfReader = PyPDF2.PdfFileReader(file, 'rb')
