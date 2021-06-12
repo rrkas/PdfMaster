@@ -88,7 +88,7 @@ def download(request, file_id):
             return_data.write(fo.read())
         return_data.seek(0)
         os.remove(file_path)
-        response = HttpResponse(return_data.read(), content_type="application/vnd.ms-excel")
+        response = HttpResponse(return_data.read(), content_type="application/pdf")
         response['Content-Disposition'] = 'inline; filename=' + 'RRKA-PDF-Master-Merge.pdf'
         return response
     raise Http404

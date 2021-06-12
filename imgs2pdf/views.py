@@ -99,7 +99,7 @@ def download(request, file_id):
         return_data.seek(0)
         os.remove(file_path)
         # print(return_data)
-        response = HttpResponse(return_data.read(), content_type="application/vnd.ms-excel")
+        response = HttpResponse(return_data.read(), content_type="application/pdf")
         response['Content-Disposition'] = 'inline; filename=' + 'RRKA-PDF-Master-Img2PDF.pdf'
         return response
     raise Http404
