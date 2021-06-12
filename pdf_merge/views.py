@@ -8,7 +8,8 @@ from django.contrib import messages
 from django.shortcuts import *
 from django.core.files.uploadedfile import TemporaryUploadedFile
 
-upload_root = 'media'
+upload_root = 'staticfiles'
+merged_files = 'merged-files'
 
 
 def allowed_file(filename):
@@ -17,9 +18,9 @@ def allowed_file(filename):
 
 def merge_pdfs(files: List[TemporaryUploadedFile]) -> str:
     filename = "{}".format(uuid.uuid4().hex)
-    filepath = join(os.getcwd(), upload_root, 'merged-files', filename + ".pdf")
-    if not os.path.exists(join(os.getcwd(), upload_root, 'merged-files')):
-        os.mkdir(join(os.getcwd(), upload_root, 'merged-files'))
+    filepath = join(os.getcwd(), upload_root, merged_files, filename + ".pdf")
+    if not os.path.exists(join(os.getcwd(), upload_root, merged_files)):
+        os.mkdir(join(os.getcwd(), upload_root, merged_files))
     pdfMerger = PyPDF2.PdfFileMerger()
     files = [file for file in files if file.name.split('.')[-1] in ['pdf', 'PDF']]
     if len(files) == 0:
@@ -66,7 +67,7 @@ def pretty_size(size):
 
 def result(request, file_id):
     print('result-file_id:', file_id)
-    filepath = join(os.getcwd(), upload_root, 'merged-files', file_id + ".pdf")
+    filepath = join(os.getcwd(), upload_root, merged_files, file_id + ".pdf")
     success = True
     if not os.path.exists(filepath):
         success = False
@@ -74,13 +75,13 @@ def result(request, file_id):
         'file_id': file_id,
         'success': success,
         'size': pretty_size(os.path.getsize(filepath)) if success else None,
-        'path': join(upload_root, 'merged-files', file_id + ".pdf"),
+        'path': join(upload_root, merged_files, file_id + ".pdf"),
     }
     return render(request, 'pdf_merge/result.html', context)
 
 
 def download(request, file_id):
-    file_path = join(os.getcwd(), upload_root, 'merged-files', file_id + ".pdf")
+    file_path = join(os.getcwd(), upload_root, merged_files, file_id + ".pdf")
     if os.path.exists(file_path):
         return_data = io.BytesIO()
         with open(file_path, 'rb') as fo:
