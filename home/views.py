@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.template import RequestContext
 from .models import *
 
 
@@ -13,3 +14,11 @@ def home(request):
 
 def about(request):
     return render(request, 'home/about.html')
+
+
+def error_404(request, *args, **kwargs):
+    return render(request, 'home/404.html', {})
+
+
+def error_500(request, *args, **kwargs):
+    return render(request, 'home/500.html', {})

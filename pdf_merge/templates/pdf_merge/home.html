@@ -1,11 +1,48 @@
 {% extends "home/layout.html" %}
-{% load crispy_forms_tags %}
 {% block content %}
 <h1 style="color:indigo;" class="mb-5">Merge PDFs</h1>
-<form method="post" action="" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" action="">
     {% csrf_token %}
-    {{ form|crispy }}
-    <button type="submit" class="btn btn-info">Merge</button>
+    <div class="form-control">
+        <input id="file-input" type="file" name="files[]" multiple autocomplete="off" required accept=".pdf,.PDF">
+    </div>
+    <div class="ml-3" id="filenames"></div>
+    <input class="btn btn-info mt-3" type="submit" value="Submit">
 </form>
-
+<script>
+    var input = document.getElementById('file-input');
+    var filenames = document.getElementById('filenames');
+    function prettySize(size){
+        if(size < 1024){
+            return "" + size + " b";
+        }
+        size /= 1024;
+        size = Math.round(size);
+        if(size < 1024){
+            return "" + size + " KB";
+        }
+        size /= 1024;
+        size = Math.round(size);
+        if(size < 1024){
+            return "" + size + " MB";
+        }
+        size /= 1024;
+        size = Math.round(size);
+        if(size < 1024){
+            return "" + size + " GB";
+        }
+    }
+    function showFileName(event) {
+      // var input = event.srcElement;
+      var namelist = "<div><b>Selected Files:</b></div>";
+      var idx=0;
+      for(idx=0; idx<input.files.length; idx++){
+        var name = input.files[idx].name;
+        if(name != "undefined" && name != "item")
+            namelist += "<div class=\"ml-3\">" + name + " (" + prettySize(input.files[idx].size) + ")" + "</div>";
+      }
+      filenames.innerHTML = namelist;
+    }
+    input.addEventListener('change', showFileName);
+</script>
 {% endblock content %}

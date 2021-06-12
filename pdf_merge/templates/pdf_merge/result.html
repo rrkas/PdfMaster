@@ -1,4 +1,7 @@
 {% extends "home/layout.html" %}
 {% block content %}
-<h1 style="color:indigo;" class="mb-5">{{ result }}</h1>
+{% if success %}
+    <h1 class="mb-5" style="color: indigo;">Files Merged</h1>
+    <a class="btn btn-success" href="{% url 'pdf-merge-download' file_id %}">Download ({{ size }})</a>
+{% endif %}
 {% endblock content %}

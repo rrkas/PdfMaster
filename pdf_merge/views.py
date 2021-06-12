@@ -1,30 +1,90 @@
+import io
+from typing import List
+from os.path import *
+import os
+import uuid
+import PyPDF2
 from django.contrib import messages
 from django.shortcuts import *
-from .forms import *
+from django.core.files.uploadedfile import TemporaryUploadedFile
+
+upload_root = 'staticfiles'
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.split('.')[-1].lower() in ['pdf', 'PDF']
+
+
+def merge_pdfs(files: List[TemporaryUploadedFile]) -> str:
+    filename = "{}".format(uuid.uuid4().hex)
+    filepath = join(os.getcwd(), upload_root, 'merged-files', filename + ".pdf")
+    if not os.path.exists(join(os.getcwd(), upload_root, 'merged-files')):
+        os.mkdir(join(os.getcwd(), upload_root, 'merged-files'))
+    pdfMerger = PyPDF2.PdfFileMerger()
+    for file in files:
+        print(file)
+        pdfReader = PyPDF2.PdfFileReader(file, 'rb')
+        pdfMerger.append(pdfReader)
+    pdfMerger.write(filepath)
+    return filename
 
 
 def home(request):
-    form = PDFMergeForm()
     if request.method == 'POST':
-        form = PDFMergeForm(request.POST)
-        if form.is_valid():
-            files = form.cleaned_data
+        files: List[TemporaryUploadedFile] = request.FILES.getlist('files[]')
+        files = list(filter(lambda file: allowed_file(file.name), files))
+        if len(files) > 0:
             try:
-                print(files)
-            except:
-                pass
-            messages.success(request, 'Merge Successful!')
-            res = 'Success'
+                res_file_id = merge_pdfs(files)
+                messages.success(request, 'Merge Successful!')
+            except BaseException as e:
+                print('home-files:', e.args)
+                res_file_id = 'error'
+                messages.error(request, 'Merge Failed! Something went wrong!', extra_tags='danger')
         else:
-            res = 'Failure'
-        return redirect('pdf-merge-result', res=res)
+            res_file_id = 'failure'
+        return redirect('pdf-merge-result', file_id=res_file_id)
+    return render(request, 'pdf_merge/home.html')
+
+
+def pretty_size(size):
+    if size < 1024:
+        return str(size) + " b"
+    size //= 1024
+    if size < 1024:
+        return str(size) + " KB"
+    size //= 1024
+    if size < 1024:
+        return str(size) + " MB"
+    size //= 1024
+    if size < 1024:
+        return str(size) + " GB"
+
+
+def result(request, file_id):
+    print('result-file_id:', file_id)
+    filepath = join(os.getcwd(), upload_root, 'merged-files', file_id + ".pdf")
+    success = True
+    if not os.path.exists(filepath):
+        success = False
     context = {
-        'form': form,
+        'file_id': file_id,
+        'success': success,
+        'size': pretty_size(os.path.getsize(filepath)) if success else None,
+        'path': join(upload_root, 'merged-files', file_id + ".pdf"),
     }
-    return render(request, 'pdf_merge/home.html', context)
+    return render(request, 'pdf_merge/result.html', context)
 
 
-def result(request):
-    res = request.GET
-    print(res.res)
-    return render(request, 'pdf_merge/result.html', {'result': 'Success'})
+def download(request, file_id):
+    file_path = join(os.getcwd(), upload_root, 'merged-files', file_id + ".pdf")
+    if os.path.exists(file_path):
+        return_data = io.BytesIO()
+        with open(file_path, 'rb') as fo:
+            return_data.write(fo.read())
+        return_data.seek(0)
+        os.remove(file_path)
+        response = HttpResponse(return_data.read(), content_type="application/vnd.ms-excel")
+        response['Content-Disposition'] = 'inline; filename=' + 'RRKA-PDF-Master-Merge.pdf'
+        return response
+    raise Http404
