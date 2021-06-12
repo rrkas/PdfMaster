@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.shortcuts import *
 from django.core.files.uploadedfile import TemporaryUploadedFile
 
-upload_root = 'staticfiles'
+upload_root = 'media'
 
 
 def allowed_file(filename):
