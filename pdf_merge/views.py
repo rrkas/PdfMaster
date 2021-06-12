@@ -26,7 +26,7 @@ def merge_pdfs(files: List[TemporaryUploadedFile]) -> str:
     if len(files) == 0:
         return 'failure'
     for file in files:
-        print(file)
+        # print(file)
         pdfReader = PyPDF2.PdfFileReader(file, 'rb')
         pdfMerger.append(pdfReader)
     pdfMerger.write(filepath)
@@ -42,7 +42,7 @@ def home(request):
                 res_file_id = merge_pdfs(files)
                 messages.success(request, 'Merge Successful!')
             except BaseException as e:
-                print('home-files:', e.args)
+                # print('home-files:', e.args)
                 res_file_id = 'error'
                 messages.error(request, 'Merge Failed! Something went wrong!', extra_tags='danger')
         else:
@@ -66,7 +66,7 @@ def pretty_size(size):
 
 
 def result(request, file_id):
-    print('result-file_id:', file_id)
+    # print('result-file_id:', file_id)
     filepath = join(os.getcwd(), upload_root, merged_files, file_id + ".pdf")
     success = True
     if not os.path.exists(filepath):

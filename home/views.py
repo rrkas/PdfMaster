@@ -3,10 +3,13 @@ from .models import *
 
 
 def home(request):
+    user_agent = request.user_agent
     context = {
         'menu_items': [
             MenuItem(name='Merge PDFs', img_url='home/item_logos/pdf_merge.png', target_url='pdf-merge-home'),
+            MenuItem(name='Images to PDF', img_url='home/item_logos/imgs2pdf.png', target_url='imgs2pdf-home'),
         ],
+        'small': (user_agent.is_mobile or user_agent.is_tablet),
     }
     return render(request, 'home/home.html', context)
 

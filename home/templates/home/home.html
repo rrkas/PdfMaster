@@ -7,11 +7,15 @@
         <div class="row">
             {% for menu in menu_items %}
                 <div class="col-6 col-md-4">
-                    <a href="{% url menu.target_url %}" class="item-url item-section" style="display:block;">
+                    <a href="{% url menu.target_url %}" class="item-url item-section" style="display:block;{% if small %}text-align:center;{% endif %}">
                         {% if menu.img_url %}
                             <img src="{% static menu.img_url %}" class="item-logo mr-2">
                         {% endif %}
-                        <span class="item-title">{{ menu.name }}</span>
+                        {% if small %}
+                            <div class="item-title">{{ menu.name }}</div>
+                        {% else %}
+                            <span class="item-title">{{ menu.name }}</span>
+                        {% endif %}
                     </a>
                 </div>
             {% endfor %}
