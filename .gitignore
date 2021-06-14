@@ -3,3 +3,5 @@ venv/
 media
 staticfiles/merged-files
 staticfiles/converted-files
+staticfiles/zip-files
+staticfiles/temp

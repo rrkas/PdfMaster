@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = secrets.token_hex(24)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'pdf_merge.apps.PdfMergeConfig',
     'imgs2pdf.apps.Imgs2PdfConfig',
+    'pdf2imgs.apps.Pdf2ImgsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

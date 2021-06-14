@@ -8,6 +8,7 @@ def home(request):
         'menu_items': [
             MenuItem(name='Merge PDFs', img_url='home/item_logos/pdf_merge.png', target_url='pdf-merge-home'),
             MenuItem(name='Images to PDF', img_url='home/item_logos/imgs2pdf.png', target_url='imgs2pdf-home'),
+            MenuItem(name='PDF to Image', img_url='home/item_logos/pdf2imgs.png', target_url='pdf2imgs-home'),
         ],
         'small': (user_agent.is_mobile or user_agent.is_tablet),
     }

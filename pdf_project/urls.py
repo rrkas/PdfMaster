@@ -22,6 +22,7 @@ urlpatterns = [
     path('', include('home.urls')),
     path('pdf-merge/', include('pdf_merge.urls')),
     path('imgs2pdf/', include('imgs2pdf.urls')),
+    path('pdf2imgs/', include('pdf2imgs.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

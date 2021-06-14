@@ -1,0 +1,13 @@
+{% extends "home/layout.html" %}
+{% block content %}
+{% if success %}
+    <h1 class="mb-5" style="color: indigo;">Images Converted!</h1>
+    <a class="btn btn-success" href="{% url 'imgs2pdf-download' file_id %}">Download ({{ size }})</a>
+{% else %}
+    <h1>Conversion Failed!</h1>
+    {% if file_id == 'error' %}
+        <h3>Error occurred while converting to pdf!</h3>
+    {% endif %}
+    <a href="{% url 'imgs2pdf-home' %}">Please try again!</a>
+{% endif %}
+{% endblock content %}
